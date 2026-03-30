@@ -1,1 +1,1 @@
-# james_hatfield_chat calls HGtoken and vercel deployment. 
+# james_hatfield_chat calls HF token and vercel deployment. 
