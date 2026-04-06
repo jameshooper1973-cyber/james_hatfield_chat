@@ -3,69 +3,140 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>HF Chat</title>
+<title>Cerebras Chat</title>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=IM+Fell+English:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 :root {
   --bg: #07070f;
   --surface: #0d0d1c;
-  --border: rgba(0,200,180,0.18);
-  --accent: #00c8b4;
-  --accent2: #00e5cc;
+  --border: rgba(150,80,255,0.18);
+  --accent: #9b50ff;
+  --accent2: #cc44ff;
   --dim: rgba(255,255,255,0.3);
   --text: rgba(255,255,255,0.85);
-  --user-bg: rgba(0,200,180,0.08);
+  --user-bg: rgba(155,80,255,0.1);
   --ai-bg: rgba(13,13,28,0.95);
 }
 html { height: 100dvh; }
 body {
   height: 100dvh; overflow: hidden;
-  font-family: 'IM Fell English', serif;
-  background: var(--bg); color: var(--text);
-  display: flex; flex-direction: column;
   padding-bottom: env(safe-area-inset-bottom);
 }
+body {
+  font-family: 'IM Fell English', serif;
+  background: var(--bg);
+  color: var(--text);
+  display: flex;
+  flex-direction: column;
+}
 body::before {
-  content: ''; position: fixed; inset: 0; pointer-events: none;
+  content: '';
+  position: fixed; inset: 0; pointer-events: none;
   background:
-    radial-gradient(ellipse 70% 50% at 15% -10%, rgba(0,120,100,0.15) 0%, transparent 60%),
-    radial-gradient(ellipse 50% 40% at 85% 100%, rgba(0,180,160,0.10) 0%, transparent 60%);
+    radial-gradient(ellipse 70% 50% at 15% -10%, rgba(100,20,180,0.18) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 40% at 85% 100%, rgba(180,20,100,0.12) 0%, transparent 60%);
 }
 #header {
-  flex-shrink: 0; display: flex; align-items: center; justify-content: space-between;
+  flex-shrink: 0;
+  display: flex; align-items: center; justify-content: space-between;
   padding: 0 12px; height: 58px;
   border-bottom: 1px solid var(--border);
-  background: rgba(7,7,15,0.92); backdrop-filter: blur(12px);
+  background: rgba(7,7,15,0.92);
+  backdrop-filter: blur(12px);
   position: relative; z-index: 10;
 }
 .header-left { display: flex; align-items: center; gap: 10px; }
 .avatar {
-  width: 38px; height: 38px; border-radius: 50%;
-  background: linear-gradient(135deg, #003d36, #00c8b4, #00e5cc);
+  width: 36px; height: 36px; border-radius: 50%;
+  background: linear-gradient(135deg, #4a0080, #9b50ff, #cc44ff);
   display: flex; align-items: center; justify-content: center;
-  font-family: 'Cinzel', serif; font-size: 13px; font-weight: 600;
+  font-family: 'Cinzel', serif; font-size: 14px; font-weight: 600;
   color: #fff; flex-shrink: 0;
-  box-shadow: 0 0 16px rgba(0,200,180,0.4);
+  box-shadow: 0 0 16px rgba(155,80,255,0.4);
   animation: pulse-glow 3s ease-in-out infinite;
 }
 @keyframes pulse-glow {
-  0%,100% { box-shadow: 0 0 16px rgba(0,200,180,0.4); }
-  50%      { box-shadow: 0 0 28px rgba(0,200,180,0.7); }
+  0%,100% { box-shadow: 0 0 16px rgba(155,80,255,0.4); }
+  50%      { box-shadow: 0 0 28px rgba(155,80,255,0.7); }
 }
 .header-name { font-family: 'Cinzel', serif; font-size: 17px; font-weight: 600; letter-spacing: 1px; }
 .header-status { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--accent); letter-spacing: 2px; opacity: 0.7; }
+.btn-h {
+  background: none; border: 1px solid var(--border);
+  color: var(--dim); font-family: 'JetBrains Mono', monospace;
+  font-size: 9px; letter-spacing: 1px; padding: 5px 8px;
+  border-radius: 6px; cursor: pointer; transition: all 0.2s; white-space: nowrap;
+}
+.btn-h:hover { border-color: var(--accent); color: var(--accent); }
+#messages {
+  flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch;
+  padding: 20px 16px;
+  display: flex; flex-direction: column; gap: 18px;
+  scroll-behavior: smooth;
+}
+#messages::-webkit-scrollbar { width: 4px; }
+#messages::-webkit-scrollbar-track { background: transparent; }
+#messages::-webkit-scrollbar-thumb { background: rgba(155,80,255,0.3); border-radius: 4px; }
+.msg { display: flex; gap: 10px; max-width: 100%; animation: fadeUp 0.3s ease; }
+@keyframes fadeUp { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+.msg.user { flex-direction: row-reverse; }
+.msg-avatar {
+  width: 30px; height: 30px; border-radius: 50%; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Cinzel', serif; font-size: 11px; font-weight: 600; margin-top: 2px;
+}
+.msg.ai .msg-avatar { background: linear-gradient(135deg, #4a0080, #9b50ff); color: #fff; box-shadow: 0 0 10px rgba(155,80,255,0.3); }
+.msg.user .msg-avatar { background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.1); color: var(--dim); }
+.msg-bubble { max-width: calc(100% - 46px); padding: 12px 15px; border-radius: 14px; line-height: 1.65; font-size: 15px; }
+.msg.ai .msg-bubble { background: var(--ai-bg); border: 1px solid var(--border); border-top-left-radius: 4px; color: var(--text); }
+.msg.user .msg-bubble { background: var(--user-bg); border: 1px solid rgba(155,80,255,0.2); border-top-right-radius: 4px; color: rgba(255,255,255,0.9); font-style: italic; }
+.typing-dots { display: flex; gap: 5px; padding: 4px 2px; align-items: center; }
+.typing-dots span { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); opacity: 0.4; animation: dot-bounce 1.2s ease-in-out infinite; }
+.typing-dots span:nth-child(2) { animation-delay: 0.2s; }
+.typing-dots span:nth-child(3) { animation-delay: 0.4s; }
+@keyframes dot-bounce { 0%,80%,100%{transform:translateY(0);opacity:0.4} 40%{transform:translateY(-6px);opacity:1} }
+#input-area { flex-shrink: 0; padding: 12px 16px 16px; border-top: 1px solid var(--border); background: rgba(7,7,15,0.92); backdrop-filter: blur(12px); }
+.input-shell { display: flex; align-items: flex-end; gap: 8px; background: rgba(255,255,255,0.04); border: 1px solid var(--border); border-radius: 14px; padding: 8px 8px 8px 14px; transition: border-color 0.2s, box-shadow 0.2s; }
+.input-shell:focus-within { border-color: rgba(155,80,255,0.45); box-shadow: 0 0 0 3px rgba(155,80,255,0.08); }
+#prompt { flex: 1; background: none; border: none; outline: none; color: #fff; font-family: 'IM Fell English', serif; font-size: 16px; line-height: 1.5; resize: none; min-height: 44px; max-height: 120px; padding: 4px 0; }
+#prompt::placeholder { color: rgba(255,255,255,0.2); font-style: italic; }
+#send-btn { width: 44px; height: 44px; border-radius: 10px; flex-shrink: 0; background: linear-gradient(135deg, var(--accent), var(--accent2)); border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: opacity 0.15s, transform 0.1s; color: #fff; font-size: 18px; }
+#send-btn:active:not(:disabled) { opacity: 0.75; transform: scale(0.94); }
+#send-btn:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
+#intro { display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 40px 24px; flex: 1; }
+.intro-glyph { font-family: 'Cinzel', serif; font-size: 52px; background: linear-gradient(135deg, var(--accent), var(--accent2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 16px; filter: drop-shadow(0 0 20px rgba(155,80,255,0.5)); }
+.intro-name { font-family: 'Cinzel', serif; font-size: 26px; font-weight: 600; letter-spacing: 3px; margin-bottom: 10px; }
+.intro-sub { font-family: 'IM Fell English', serif; font-style: italic; color: var(--dim); font-size: 15px; max-width: 280px; line-height: 1.6; }
+.intro-starters { display: flex; flex-direction: column; gap: 8px; margin-top: 28px; width: 100%; max-width: 320px; }
+.starter { background: rgba(155,80,255,0.07); border: 1px solid var(--border); color: rgba(255,255,255,0.5); font-family: 'IM Fell English', serif; font-style: italic; font-size: 13px; padding: 9px 14px; border-radius: 10px; cursor: pointer; transition: all 0.15s; text-align: left; }
+.starter:hover { border-color: var(--accent); color: rgba(255,255,255,0.85); background: rgba(155,80,255,0.12); }
+.overlay { position: fixed; inset: 0; z-index: 100; background: var(--bg); display: none; flex-direction: column; }
+.overlay.show { display: flex; }
+.overlay-header { display: flex; align-items: center; justify-content: space-between; padding: 0 16px; height: 58px; flex-shrink: 0; border-bottom: 1px solid var(--border); background: rgba(7,7,15,0.92); }
+.overlay-title { font-family: 'Cinzel', serif; font-size: 16px; font-weight: 600; letter-spacing: 1px; }
+.overlay-body { flex: 1; overflow-y: auto; padding: 20px 16px; }
+.fact-item { display: flex; align-items: flex-start; gap: 10px; padding: 12px 14px; margin-bottom: 8px; background: rgba(155,80,255,0.06); border: 1px solid var(--border); border-radius: 10px; font-size: 14px; line-height: 1.5; }
+.fact-bullet { color: var(--accent); flex-shrink: 0; margin-top: 1px; }
+.fact-empty { color: var(--dim); font-style: italic; font-size: 14px; text-align: center; margin-top: 40px; }
+.conv-item { padding: 14px; margin-bottom: 10px; background: rgba(155,80,255,0.06); border: 1px solid var(--border); border-radius: 12px; cursor: pointer; transition: all 0.15s; }
+.conv-item:hover { border-color: var(--accent); background: rgba(155,80,255,0.1); }
+.conv-date { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--accent); letter-spacing: 1px; margin-bottom: 6px; }
+.conv-preview { font-size: 13px; color: var(--dim); font-style: italic; line-height: 1.4; }
+.conv-count { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: rgba(255,255,255,0.2); margin-top: 6px; }
+.conv-empty { color: var(--dim); font-style: italic; font-size: 14px; text-align: center; margin-top: 40px; }
+
 #menu-btn {
   width: 44px; height: 44px; background: none;
   border: 1px solid var(--border); border-radius: 8px;
   display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px;
-  cursor: pointer; flex-shrink: 0; transition: border-color 0.2s; touch-action: manipulation;
+  cursor: pointer; flex-shrink: 0; touch-action: manipulation;
 }
 #menu-btn:active { border-color: var(--accent); }
 #menu-btn span { display: block; width: 18px; height: 1.5px; background: var(--dim); border-radius: 2px; }
 #menu-dropdown {
   position: absolute; top: 58px; right: 0; width: 200px;
-  background: rgba(10,10,20,0.98); border: 1px solid var(--border);
+  background: rgba(7,7,15,0.98); border: 1px solid var(--border);
   border-top: none; border-radius: 0 0 12px 12px;
   backdrop-filter: blur(16px); z-index: 50;
   display: none; flex-direction: column; overflow: hidden;
@@ -75,86 +146,22 @@ body::before {
   background: none; border: none; border-bottom: 1px solid var(--border);
   color: var(--dim); font-family: 'JetBrains Mono', monospace;
   font-size: 11px; letter-spacing: 1px;
-  padding: 16px 20px; text-align: left;
-  cursor: pointer; min-height: 52px;
-  display: flex; align-items: center; gap: 12px;
+  padding: 16px 20px; text-align: left; cursor: pointer;
+  min-height: 52px; display: flex; align-items: center; gap: 12px;
   touch-action: manipulation;
 }
 .menu-item:last-child { border-bottom: none; }
-.menu-item:active { background: rgba(0,200,180,0.08); color: var(--accent); }
+.menu-item:active { background: rgba(155,80,255,0.08); color: var(--accent); }
 .menu-icon { font-size: 14px; flex-shrink: 0; }
-.btn-h {
-  background: none; border: 1px solid var(--border);
-  color: var(--dim); font-family: 'JetBrains Mono', monospace;
-  font-size: 10px; letter-spacing: 1px; padding: 8px 14px;
-  border-radius: 6px; cursor: pointer; transition: all 0.2s;
-  min-height: 40px; touch-action: manipulation;
-}
-.btn-h:active { border-color: var(--accent); color: var(--accent); }
-#messages {
-  flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch;
-  padding: 20px 16px; display: flex; flex-direction: column; gap: 18px;
-  scroll-behavior: smooth;
-}
-#messages::-webkit-scrollbar { width: 4px; }
-#messages::-webkit-scrollbar-track { background: transparent; }
-#messages::-webkit-scrollbar-thumb { background: rgba(0,200,180,0.3); border-radius: 4px; }
-.msg { display: flex; gap: 10px; max-width: 100%; animation: fadeUp 0.3s ease; }
-@keyframes fadeUp { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
-.msg.user { flex-direction: row-reverse; }
-.msg-avatar {
-  width: 30px; height: 30px; border-radius: 50%; flex-shrink: 0;
-  display: flex; align-items: center; justify-content: center;
-  font-family: 'Cinzel', serif; font-size: 11px; font-weight: 600; margin-top: 2px;
-}
-.msg.ai .msg-avatar { background: linear-gradient(135deg, #003d36, #00c8b4); color: #fff; box-shadow: 0 0 10px rgba(0,200,180,0.3); }
-.msg.user .msg-avatar { background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.1); color: var(--dim); }
-.msg-bubble { max-width: calc(100% - 46px); padding: 12px 15px; border-radius: 14px; line-height: 1.65; font-size: 15px; }
-.msg.ai .msg-bubble { background: var(--ai-bg); border: 1px solid var(--border); border-top-left-radius: 4px; color: var(--text); }
-.msg.user .msg-bubble { background: var(--user-bg); border: 1px solid rgba(0,200,180,0.2); border-top-right-radius: 4px; color: rgba(255,255,255,0.9); font-style: italic; }
-.typing-dots { display: flex; gap: 5px; padding: 4px 2px; align-items: center; }
-.typing-dots span { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); opacity: 0.4; animation: dot-bounce 1.2s ease-in-out infinite; }
-.typing-dots span:nth-child(2) { animation-delay: 0.2s; }
-.typing-dots span:nth-child(3) { animation-delay: 0.4s; }
-@keyframes dot-bounce { 0%,80%,100%{transform:translateY(0);opacity:0.4} 40%{transform:translateY(-6px);opacity:1} }
-#input-area { flex-shrink: 0; padding: 10px 12px 12px; border-top: 1px solid var(--border); background: rgba(7,7,15,0.92); backdrop-filter: blur(12px); }
-.input-shell { display: flex; align-items: flex-end; gap: 8px; background: rgba(255,255,255,0.04); border: 1px solid var(--border); border-radius: 14px; padding: 8px 8px 8px 14px; transition: border-color 0.2s, box-shadow 0.2s; }
-.input-shell:focus-within { border-color: rgba(0,200,180,0.45); box-shadow: 0 0 0 3px rgba(0,200,180,0.08); }
-#prompt { flex: 1; background: none; border: none; outline: none; color: #fff; font-family: 'IM Fell English', serif; font-size: 16px; line-height: 1.5; resize: none; min-height: 44px; max-height: 120px; padding: 4px 0; }
-#prompt::placeholder { color: rgba(255,255,255,0.2); font-style: italic; }
-#send-btn { width: 44px; height: 44px; border-radius: 10px; flex-shrink: 0; background: linear-gradient(135deg, var(--accent), var(--accent2)); border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: opacity 0.15s, transform 0.1s; color: #07070f; font-size: 20px; touch-action: manipulation; }
-#send-btn:active:not(:disabled) { opacity: 0.75; transform: scale(0.94); }
-#send-btn:disabled { opacity: 0.35; cursor: not-allowed; }
-#intro { display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 40px 24px; flex: 1; }
-.intro-glyph { font-family: 'Cinzel', serif; font-size: 52px; background: linear-gradient(135deg, var(--accent), var(--accent2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 16px; filter: drop-shadow(0 0 20px rgba(0,200,180,0.5)); }
-.intro-name { font-family: 'Cinzel', serif; font-size: 26px; font-weight: 600; letter-spacing: 3px; margin-bottom: 10px; }
-.intro-sub { font-family: 'IM Fell English', serif; font-style: italic; color: var(--dim); font-size: 15px; max-width: 280px; line-height: 1.6; }
-.intro-starters { display: flex; flex-direction: column; gap: 8px; margin-top: 28px; width: 100%; max-width: 320px; }
-.starter { background: rgba(0,200,180,0.06); border: 1px solid var(--border); color: rgba(255,255,255,0.5); font-family: 'IM Fell English', serif; font-style: italic; font-size: 14px; padding: 13px 14px; border-radius: 10px; cursor: pointer; transition: all 0.15s; text-align: left; min-height: 48px; touch-action: manipulation; }
-.starter:active { border-color: var(--accent); color: rgba(255,255,255,0.85); background: rgba(0,200,180,0.1); }
-.overlay { position: fixed; inset: 0; z-index: 100; background: var(--bg); display: none; flex-direction: column; }
-.overlay.show { display: flex; }
-.overlay-header { display: flex; align-items: center; justify-content: space-between; padding: 0 16px; height: 58px; flex-shrink: 0; border-bottom: 1px solid var(--border); background: rgba(7,7,15,0.92); }
-.overlay-title { font-family: 'Cinzel', serif; font-size: 16px; font-weight: 600; letter-spacing: 1px; }
-.overlay-body { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 20px 16px; }
-.fact-item { display: flex; align-items: flex-start; gap: 10px; padding: 14px; margin-bottom: 8px; background: rgba(0,200,180,0.05); border: 1px solid var(--border); border-radius: 10px; font-size: 14px; line-height: 1.5; }
-.fact-bullet { color: var(--accent); flex-shrink: 0; margin-top: 1px; }
-.fact-empty { color: var(--dim); font-style: italic; font-size: 14px; text-align: center; margin-top: 40px; }
-.conv-item { padding: 16px; margin-bottom: 10px; background: rgba(0,200,180,0.05); border: 1px solid var(--border); border-radius: 12px; cursor: pointer; min-height: 60px; touch-action: manipulation; }
-.conv-item:active { border-color: var(--accent); background: rgba(0,200,180,0.09); }
-.conv-date { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--accent); letter-spacing: 1px; margin-bottom: 6px; }
-.conv-preview { font-size: 13px; color: var(--dim); font-style: italic; line-height: 1.4; }
-.conv-count { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: rgba(255,255,255,0.2); margin-top: 6px; }
-.conv-empty { color: var(--dim); font-style: italic; font-size: 14px; text-align: center; margin-top: 40px; }
 </style>
 </head>
 <body>
 
 <div id="header">
   <div class="header-left">
-    <div class="avatar">HF</div>
+    <div class="avatar">CB</div>
     <div>
-      <div class="header-name">HF Chat</div>
+      <div class="header-name">Cerebras Chat</div>
       <div class="header-status">ONLINE</div>
     </div>
   </div>
@@ -174,9 +181,9 @@ body::before {
 
 <div id="messages">
   <div id="intro">
-    <div class="intro-glyph">⬡</div>
-    <div class="intro-name">HF CHAT</div>
-    <div class="intro-sub">Powered by HuggingFace. Ask me anything — I remember across conversations.</div>
+    <div class="intro-glyph">𝕯</div>
+    <div class="intro-name">CEREBRAS CHAT</div>
+    <div class="intro-sub">Powered by Cerebras — blazing fast inference. Ask me anything.</div>
     <div class="intro-starters">
       <div class="starter" onclick="useStarter(this)">What can you help me with?</div>
       <div class="starter" onclick="useStarter(this)">What do you remember about me?</div>
@@ -187,7 +194,7 @@ body::before {
 
 <div id="input-area">
   <div class="input-shell">
-    <textarea id="prompt" placeholder="Type a message…" rows="1"></textarea>
+    <textarea id="prompt" placeholder="Speak into the dark…" rows="1"></textarea>
     <button id="send-btn" onclick="sendMessage()">&#x27A4;</button>
   </div>
 </div>
@@ -209,7 +216,8 @@ body::before {
 </div>
 
 <script>
-// ─── CONFIGURE YOUR PERSONA HERE ────────────────────────────────────────────
+const DEFAULT_MODEL = 'llama3.1-8b';
+
 const PERSONA = `You are a helpful, knowledgeable assistant. Be concise, accurate, and friendly.
 
 Memory instructions:
@@ -218,15 +226,10 @@ Memory instructions:
 - When the user reveals something significant about themselves, acknowledge it subtly
 - Do not announce that you are memorising something — simply remember`;
 
-// Model to use — append :fastest, :cheapest, or a provider name e.g. :sambanova
-// Other options: meta-llama/Meta-Llama-3.1-8B-Instruct, deepseek-ai/DeepSeek-R1, etc.
-const DEFAULT_MODEL = 'Qwen/Qwen2.5-7B-Instruct';
-// ─────────────────────────────────────────────────────────────────────────────
-
-const MEMORY_KEY  = 'hfchat_memory';
-const HISTORY_KEY = 'hfchat_history';
-const ARCHIVE_KEY = 'hfchat_archive';
-const CONVS_KEY   = 'hfchat_conversations';
+const MEMORY_KEY   = 'cerebras_memory';
+const HISTORY_KEY  = 'cerebras_history';
+const ARCHIVE_KEY  = 'cerebras_archive';
+const CONVS_KEY    = 'cerebras_conversations';
 const THREE_MONTHS = 90 * 24 * 60 * 60 * 1000;
 
 function loadMemory()  { try { return JSON.parse(localStorage.getItem(MEMORY_KEY)  || '[]'); } catch { return []; } }
@@ -240,7 +243,7 @@ function saveConvs(c)  { localStorage.setItem(CONVS_KEY, JSON.stringify(c)); }
 let conversationHistory = loadHistory();
 let persistentFacts     = loadMemory();
 
-function toMessages(h) { return h.map(({ role, content }) => ({ role, content })); }
+function toMistralMessages(h) { return h.map(({ role, content }) => ({ role, content })); }
 
 function runAutoArchive() {
   const now = Date.now();
@@ -282,7 +285,7 @@ function showFacts() {
   const list = document.getElementById('facts-list');
   list.innerHTML = '';
   if (persistentFacts.length === 0) {
-    list.innerHTML = '<div class="fact-empty">No memories yet. Chat and I\'ll start remembering things about you.</div>';
+    list.innerHTML = '<div class="fact-empty">No memories yet. Speak with Devina and she will remember.</div>';
   } else {
     persistentFacts.forEach(fact => {
       const div = document.createElement('div');
@@ -353,7 +356,7 @@ function exportData() {
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.href = url;
-  a.download = 'hfchat-backup-' + new Date().toISOString().slice(0,10) + '.json';
+  a.download = 'cerebras-backup-' + new Date().toISOString().slice(0,10) + '.json';
   document.body.appendChild(a);
   a.click();
   document.body.removeChild(a);
@@ -391,7 +394,7 @@ function importData(event) {
 
 async function extractFacts(userMsg, aiReply) {
   try {
-    const res = await callHF(
+    const res = await callCerebras(
       'You are a memory extractor. Extract concrete facts the user revealed about themselves: name, location, age, occupation, interests, fears, goals, relationships, strong opinions. Return ONLY a JSON array of short strings. If nothing significant, return []. No explanation.',
       'User said: "' + userMsg + '"\nAssistant replied: "' + aiReply + '"\n\nExtract facts about the user only.',
       { json_mode: true, max_tokens: 300, temperature: 0.2 }
@@ -423,8 +426,8 @@ async function sendMessage() {
     systemPrompt += '\n\n--- MEMORY FROM PREVIOUS CONVERSATIONS ---\n' + persistentFacts.map(f => '• ' + f).join('\n') + '\n---';
   }
   try {
-    const reply = await callHF(systemPrompt, null, {
-      messages: toMessages(conversationHistory),
+    const reply = await callCerebras(systemPrompt, null, {
+      messages: toMistralMessages(conversationHistory),
       max_tokens: 800, temperature: 0.85
     });
     removeTyping(typingId);
@@ -440,12 +443,12 @@ async function sendMessage() {
   scrollToBottom();
 }
 
-async function callHF(system, userMessage, options = {}) {
+async function callCerebras(system, userMessage, options = {}) {
   const { json_mode = false, model = DEFAULT_MODEL, max_tokens = 800, temperature = 0.85, messages = null } = options;
   const msgs = messages || [{ role: 'user', content: userMessage }];
   let res;
   try {
-    res = await fetch('/api/hf', {
+    res = await fetch('/api/cerebras', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ system, messages: msgs, model, max_tokens, temperature, json_mode })
@@ -463,8 +466,7 @@ function appendMessage(role, text, animate = true) {
   const div = document.createElement('div');
   div.className = 'msg ' + role;
   if (!animate) div.style.animation = 'none';
-  const label = role === 'ai' ? 'AI' : 'U';
-  div.innerHTML = '<div class="msg-avatar">' + label + '</div><div class="msg-bubble">' + escapeHtml(text) + '</div>';
+  div.innerHTML = '<div class="msg-avatar">' + (role === 'ai' ? 'AI' : 'U') + '</div><div class="msg-bubble">' + escapeHtml(text) + '</div>';
   wrap.appendChild(div);
   if (animate) scrollToBottom();
 }
@@ -484,13 +486,13 @@ function useStarter(el) { document.getElementById('prompt').value = el.textConte
 function showIntro() {
   document.getElementById('messages').innerHTML =
     '<div id="intro">' +
-    '<div class="intro-glyph">⬡</div>' +
-    '<div class="intro-name">HF CHAT</div>' +
-    '<div class="intro-sub">Powered by HuggingFace. Ask me anything — I remember across conversations.</div>' +
+    '<div class="intro-glyph">\u{1D503}</div>' +
+    '<div class="intro-name">CEREBRAS CHAT</div>' +
+    '<div class="intro-sub">Powered by Cerebras — blazing fast inference. Ask me anything.</div>' +
     '<div class="intro-starters">' +
-    '<div class="starter" onclick="useStarter(this)">What can you help me with?</div>' +
-    '<div class="starter" onclick="useStarter(this)">What do you remember about me?</div>' +
-    '<div class="starter" onclick="useStarter(this)">Tell me something interesting.</div>' +
+    '<div class="starter" onclick="useStarter(this)">Who are you, really?</div>' +
+    '<div class="starter" onclick="useStarter(this)">What do you know about me?</div>' +
+    '<div class="starter" onclick="useStarter(this)">Tell me something I shouldn\'t know.</div>' +
     '</div></div>';
 }
 
@@ -508,7 +510,7 @@ function showToast(msg) {
   t.textContent = msg;
   Object.assign(t.style, {
     position:'fixed', bottom:'80px', left:'50%', transform:'translateX(-50%)',
-    background:'rgba(0,200,180,0.92)', color:'#07070f', padding:'8px 20px',
+    background:'rgba(155,80,255,0.92)', color:'#fff', padding:'8px 20px',
     borderRadius:'20px', fontFamily:"'JetBrains Mono',monospace", fontSize:'12px',
     zIndex:'9999', pointerEvents:'none', whiteSpace:'nowrap'
   });
@@ -524,18 +526,15 @@ if (conversationHistory.length > 0) {
 }
 runAutoArchive();
 
-function toggleMenu() {
-  document.getElementById('menu-dropdown').classList.toggle('open');
-}
-function menuAction(fn) {
-  document.getElementById('menu-dropdown').classList.remove('open');
-  fn();
-}
+// Hamburger menu
+function toggleMenu() { document.getElementById('menu-dropdown').classList.toggle('open'); }
+function menuAction(fn) { document.getElementById('menu-dropdown').classList.remove('open'); fn(); }
 document.addEventListener('click', e => {
   if (!e.target.closest('#menu-btn') && !e.target.closest('#menu-dropdown')) {
     document.getElementById('menu-dropdown').classList.remove('open');
   }
 });
+
 document.getElementById('import-btn').addEventListener('click', () => {
   document.getElementById('menu-dropdown').classList.remove('open');
   document.getElementById('import-input').click();
@@ -545,9 +544,7 @@ document.getElementById('prompt').addEventListener('input', function() {
   this.style.height = 'auto';
   this.style.height = Math.min(this.scrollHeight, 120) + 'px';
 });
-document.getElementById('prompt').addEventListener('keydown', e => {
-  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
-});
+// Enter key does NOT send — use the arrow button on screen
 </script>
 </body>
 </html>
