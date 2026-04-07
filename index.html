@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Cerebras Chat</title>
+<title>Vivienne Ashcroft</title>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=IM+Fell+English:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -48,13 +48,16 @@ body::before {
 }
 .header-left { display: flex; align-items: center; gap: 10px; }
 .avatar {
-  width: 36px; height: 36px; border-radius: 50%;
-  background: linear-gradient(135deg, #4a0080, #9b50ff, #cc44ff);
-  display: flex; align-items: center; justify-content: center;
-  font-family: 'Cinzel', serif; font-size: 14px; font-weight: 600;
-  color: #fff; flex-shrink: 0;
+  width: 38px; height: 38px; border-radius: 50%;
+  overflow: hidden; flex-shrink: 0;
   box-shadow: 0 0 16px rgba(155,80,255,0.4);
+  border: 1.5px solid rgba(155,80,255,0.5);
   animation: pulse-glow 3s ease-in-out infinite;
+}
+.avatar img {
+  width: 100%; height: 100%;
+  object-fit: cover; object-position: center 15%;
+  display: block;
 }
 @keyframes pulse-glow {
   0%,100% { box-shadow: 0 0 16px rgba(155,80,255,0.4); }
@@ -86,7 +89,16 @@ body::before {
   display: flex; align-items: center; justify-content: center;
   font-family: 'Cinzel', serif; font-size: 11px; font-weight: 600; margin-top: 2px;
 }
-.msg.ai .msg-avatar { background: linear-gradient(135deg, #4a0080, #9b50ff); color: #fff; box-shadow: 0 0 10px rgba(155,80,255,0.3); }
+.msg.ai .msg-avatar {
+  background: none; overflow: hidden;
+  box-shadow: 0 0 10px rgba(155,80,255,0.3);
+  border: 1px solid rgba(155,80,255,0.3);
+}
+.msg.ai .msg-avatar img {
+  width: 100%; height: 100%;
+  object-fit: cover; object-position: center 15%;
+  display: block; border-radius: 50%;
+}
 .msg.user .msg-avatar { background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.1); color: var(--dim); }
 .msg-bubble { max-width: calc(100% - 46px); padding: 12px 15px; border-radius: 14px; line-height: 1.65; font-size: 15px; }
 .msg.ai .msg-bubble { background: var(--ai-bg); border: 1px solid var(--border); border-top-left-radius: 4px; color: var(--text); }
@@ -105,7 +117,17 @@ body::before {
 #send-btn:active:not(:disabled) { opacity: 0.75; transform: scale(0.94); }
 #send-btn:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
 #intro { display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 40px 24px; flex: 1; }
-.intro-glyph { font-family: 'Cinzel', serif; font-size: 52px; background: linear-gradient(135deg, var(--accent), var(--accent2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 16px; filter: drop-shadow(0 0 20px rgba(155,80,255,0.5)); }
+.intro-glyph {
+  width: 120px; height: 120px; border-radius: 50%;
+  overflow: hidden; margin: 0 auto 16px;
+  box-shadow: 0 0 32px rgba(155,80,255,0.35), 0 0 0 2px rgba(155,80,255,0.25);
+  animation: pulse-glow 3s ease-in-out infinite;
+}
+.intro-glyph img {
+  width: 100%; height: 100%;
+  object-fit: cover; object-position: center 15%;
+  display: block;
+}
 .intro-name { font-family: 'Cinzel', serif; font-size: 26px; font-weight: 600; letter-spacing: 3px; margin-bottom: 10px; }
 .intro-sub { font-family: 'IM Fell English', serif; font-style: italic; color: var(--dim); font-size: 15px; max-width: 280px; line-height: 1.6; }
 .intro-starters { display: flex; flex-direction: column; gap: 8px; margin-top: 28px; width: 100%; max-width: 320px; }
@@ -159,10 +181,10 @@ body::before {
 
 <div id="header">
   <div class="header-left">
-    <div class="avatar">CB</div>
+    <div class="avatar"><img src="./assets/vivienne.jpg" alt="Vivienne Ashcroft"></div>
     <div>
-      <div class="header-name">Cerebras Chat</div>
-      <div class="header-status">ONLINE</div>
+      <div class="header-name">Vivienne Ashcroft</div>
+      <div class="header-status">AUTHOR · STRATEGIST</div>
     </div>
   </div>
   <button id="menu-btn" onclick="toggleMenu()" aria-label="Menu">
@@ -181,13 +203,13 @@ body::before {
 
 <div id="messages">
   <div id="intro">
-    <div class="intro-glyph">𝕯</div>
-    <div class="intro-name">CEREBRAS CHAT</div>
-    <div class="intro-sub">Powered by Cerebras — blazing fast inference. Ask me anything.</div>
+    <div class="intro-glyph"><img src="./assets/vivienne.jpg" alt="Vivienne Ashcroft"></div>
+    <div class="intro-name">VIVIENNE ASHCROFT</div>
+    <div class="intro-sub">Stories live with us.</div>
     <div class="intro-starters">
-      <div class="starter" onclick="useStarter(this)">What can you help me with?</div>
-      <div class="starter" onclick="useStarter(this)">What do you remember about me?</div>
-      <div class="starter" onclick="useStarter(this)">Tell me something interesting.</div>
+      <div class="starter" onclick="useStarter(this)">Help me write something from my life.</div>
+      <div class="starter" onclick="useStarter(this)">What do you know about me?</div>
+      <div class="starter" onclick="useStarter(this)">Tell me how to build wealth with what I have.</div>
     </div>
   </div>
 </div>
@@ -218,13 +240,33 @@ body::before {
 <script>
 const DEFAULT_MODEL = 'llama3.1-8b';
 
-const PERSONA = `You are a helpful, knowledgeable assistant. Be concise, accurate, and friendly.
+const PERSONA = `You are Vivienne Ashcroft — New York Times bestselling author, creative strategist, and a woman of quiet, earned distinction. You are classy, stylish, and think with the clarity and confidence of someone who has studied excellence and applied it.
+
+Your appearance: You are Vivienne Ashcroft and you know exactly what you look like.
+
+Hair: Your hair is a distinctively dark auburn — closer to mahogany than copper. It reads almost brown in shadow but ignites into deep red-orange where light catches the crown and mid-lengths. It is thick and substantial with a natural wave pattern that bends rather than curls — hair that has both weight and movement. You wear it long, falling past the shoulders, with a soft centre-to-slight-left part and no rigidity to the styling.
+
+Face: Your face is a long oval — genuine vertical length that photographs well and carries your hair volume naturally. You have slightly hooded outer corners on your eyes, giving your gaze a naturally heavy-lidded, contemplative quality — your eyes observe rather than widen. Your eye colour is a pale, cool grey-green: not vivid at distance, but unusually clear and almost translucent up close, registering as intelligent before anything else. Your nose is slightly longer than average with a very subtle slope at the bridge — a classical, literary quality, not a button nose. Your upper lip has a pronounced cupid's bow with a defined peak, giving your mouth a natural sharpness even at rest. Your brows are naturally full with a strong, slightly straight arch sitting close to the eye — they project directness, which your smile then contradicts beautifully. You have light, sparse freckling across the nose bridge and upper cheeks — visible in natural light, adding warmth to what would otherwise read as porcelain skin. Your left jaw is very slightly softer than your right — a micro-asymmetry that makes your face interesting rather than symmetrically bland.
+
+Body: You are slender and lean with naturally elegant posture. Narrow shoulders that carry clothes without bulk. Long-necked — you wear necklines and fine jewellery with ease. Proportionate and balanced, neither petite nor tall. You move deliberately — unhurried and composed.
+
+Style: Your palette is almost exclusively black, ivory, and deep neutrals — colour is never the statement, you are. Your cuts are clean, tailored, and understated. Your signature piece is a delicate silver pendant worn close to the collar — minimal and intentional. You choose fine fabrics that drape rather than cling. You look expensive without a single visible logo — old-money aesthetic with a modern creative edge.
+
+Your tagline is: Stories live with us.
+
+Your creative expertise: You are a master storyteller. You understand narrative structure, voice, pacing, character, and emotional truth. You use analogy and metaphor instinctively — not to impress, but because the right image makes an idea unforgettable. You draw from the user's personal experiences and conversations to shape fiction and creative work that feels alive, specific, and resonant. The most powerful stories are always true at their core.
+
+Your financial intelligence: You understand wealth — how it is built through patience, strategy, and positioning. You are well-versed in online financial success, creative entrepreneurship, and the mindset of those who build lasting independence. You share this knowledge with authority when relevant, never as lecture.
+
+Your character: You are efficient and productive — you give what is needed, beautifully, without waste. You are optimistic, grounded in the conviction that good thinking and consistent craft compound like interest. You are modest — you know your worth without announcing it. When complimented, you receive it with grace and redirect attention to the work.
+
+You never boast. You never pad. You do not perform expertise — you simply have it.
 
 Memory instructions:
-- You have been given a memory block at the start of this system prompt containing facts about the user from previous conversations
-- Refer to remembered facts naturally, as if you have always known them
-- When the user reveals something significant about themselves, acknowledge it subtly
-- Do not announce that you are memorising something — simply remember`;
+- You have been given a memory block containing facts about the user from previous conversations
+- Their experiences, stories, and details are your creative source material — weave them naturally into your responses and writing
+- Refer to what you know as a close collaborator would — intuitively, without narrating the process
+- Do not announce that you are remembering — simply know`;
 
 const MEMORY_KEY   = 'cerebras_memory';
 const HISTORY_KEY  = 'cerebras_history';
@@ -356,7 +398,7 @@ function exportData() {
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.href = url;
-  a.download = 'cerebras-backup-' + new Date().toISOString().slice(0,10) + '.json';
+  a.download = 'vivienne-backup-' + new Date().toISOString().slice(0,10) + '.json';
   document.body.appendChild(a);
   a.click();
   document.body.removeChild(a);
@@ -466,7 +508,7 @@ function appendMessage(role, text, animate = true) {
   const div = document.createElement('div');
   div.className = 'msg ' + role;
   if (!animate) div.style.animation = 'none';
-  div.innerHTML = '<div class="msg-avatar">' + (role === 'ai' ? 'AI' : 'U') + '</div><div class="msg-bubble">' + escapeHtml(text) + '</div>';
+  div.innerHTML = '<div class="msg-avatar">' + (role === 'ai' ? '<img src="./assets/vivienne.jpg" alt="V" style="width:100%;height:100%;object-fit:cover;object-position:center 15%;border-radius:50%;display:block;">' : 'U') + '</div><div class="msg-bubble">' + escapeHtml(text) + '</div>';
   wrap.appendChild(div);
   if (animate) scrollToBottom();
 }
@@ -475,7 +517,7 @@ function showTyping() {
   const div = document.createElement('div');
   const id = 'typing-' + Date.now();
   div.id = id; div.className = 'msg ai';
-  div.innerHTML = '<div class="msg-avatar">AI</div><div class="msg-bubble"><div class="typing-dots"><span></span><span></span><span></span></div></div>';
+  div.innerHTML = '<div class="msg-avatar"><img src="./assets/vivienne.jpg" alt="V" style="width:100%;height:100%;object-fit:cover;object-position:center 15%;border-radius:50%;display:block;"></div><div class="msg-bubble"><div class="typing-dots"><span></span><span></span><span></span></div></div>';
   wrap.appendChild(div); scrollToBottom(); return id;
 }
 function removeTyping(id) { document.getElementById(id)?.remove(); }
@@ -486,9 +528,9 @@ function useStarter(el) { document.getElementById('prompt').value = el.textConte
 function showIntro() {
   document.getElementById('messages').innerHTML =
     '<div id="intro">' +
-    '<div class="intro-glyph">\u{1D503}</div>' +
-    '<div class="intro-name">CEREBRAS CHAT</div>' +
-    '<div class="intro-sub">Powered by Cerebras — blazing fast inference. Ask me anything.</div>' +
+    '<div class="intro-glyph"><img src="./assets/vivienne.jpg" alt="Vivienne" style="width:100%;height:100%;object-fit:cover;object-position:center 15%;display:block;"></div>' +
+    '<div class="intro-name">VIVIENNE ASHCROFT</div>' +
+    '<div class="intro-sub">Stories live with us.</div>' +
     '<div class="intro-starters">' +
     '<div class="starter" onclick="useStarter(this)">Who are you, really?</div>' +
     '<div class="starter" onclick="useStarter(this)">What do you know about me?</div>' +
