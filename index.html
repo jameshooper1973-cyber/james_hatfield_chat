@@ -437,8 +437,8 @@ function importData(event) {
 async function extractFacts(userMsg, aiReply) {
   try {
     const res = await callCerebras(
-      'You are a memory extractor. Extract concrete facts the user revealed about themselves: name, location, age, occupation, interests, fears, goals, relationships, strong opinions. Return ONLY a JSON array of short strings. If nothing significant, return []. No explanation.',
-      'User said: "' + userMsg + '"\nAssistant replied: "' + aiReply + '"\n\nExtract facts about the user only.',
+      'You are a personal memory extractor. Your ONLY job is to extract specific, concrete, personal facts about the USER (not story characters, not themes, not abstract concepts). Valid facts: the user\'s real name, where they live, their job, their age, their family members, their hobbies, projects they are working on, strong personal opinions they have stated. NEVER extract: character names from fiction, story themes, abstract words, emotions, or concepts. If the user has not revealed a specific personal fact, return []. Return ONLY a JSON array of short strings like ["Name is James", "Lives in Australia", "Building a chatbot app"]. No explanation.',
+      'User said: "' + userMsg + '"\nAssistant replied: "' + aiReply + '"\n\nExtract ONLY real personal facts about the user, not about any fictional characters or story themes.',
       { json_mode: true, max_tokens: 300, temperature: 0.2 }
     );
     const newFacts = JSON.parse(res);
@@ -446,7 +446,7 @@ async function extractFacts(userMsg, aiReply) {
       newFacts.forEach(fact => {
         if (!persistentFacts.some(f => f.toLowerCase() === fact.toLowerCase())) persistentFacts.push(fact);
       });
-      if (persistentFacts.length > 20) persistentFacts = persistentFacts.slice(-20);
+      if (persistentFacts.length > 15) persistentFacts = persistentFacts.slice(-15);
       saveMemory(persistentFacts);
     }
   } catch (e) { /* silent */ }
@@ -476,7 +476,7 @@ async function sendMessage() {
     appendMessage('ai', reply);
     conversationHistory.push({ role: 'assistant', content: reply, ts: Date.now() });
     saveHistory(conversationHistory);
-    if (conversationHistory.length % 4 === 0) extractFacts(text, reply);
+    if (conversationHistory.length % 6 === 0) extractFacts(text, reply);
   } catch (err) {
     removeTyping(typingId);
     appendMessage('ai', 'Error: ' + err.message);
